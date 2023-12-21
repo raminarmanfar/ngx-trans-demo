@@ -1,35 +1,40 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
 
 describe('AppComponent', () => {
+  let fixture: ComponentFixture<AppComponent>;
+  let translateService: TranslateService;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule
+        RouterTestingModule,
+        HttpClientTestingModule,
+        TranslateModule.forRoot()
       ],
       declarations: [
         AppComponent
       ],
+      providers: []
     }).compileComponents();
-  });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+    fixture = TestBed.createComponent(AppComponent);
 
-  it(`should have as title 'ngx-trans-demo'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('ngx-trans-demo');
-  });
+    translateService = TestBed.inject(TranslateService);
+    translateService.setTranslation('de', await import('../assets/i18n/de.json'));
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    translateService.setDefaultLang('de');
+    translateService.use('de');
+
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, ngx-trans-demo');
+  });
+
+  it('should translate the text', () => {
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('h1').textContent).toContain('Servus');
   });
 });
